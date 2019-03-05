@@ -1,9 +1,9 @@
 # Uninstall POSIX clients first, otherwise if user changes from NFS to Fuse it will conflict.
 - import_playbook: mapr-include-vars.yml
-- name: Uninstall NFS
-  hosts: all:!mapr-nfs
+- name: Uninstall NFS v3
+  hosts: all:!mapr-nfs-v3
   roles:
-    - ../roles/mapr-nfs-uninstall
+    - ../roles/mapr-nfs-v3-uninstall
 - name: Uninstall mapr-posix-client-basic (FUSE)
   hosts: all:!mapr-posix-client-basic
   roles:
@@ -28,7 +28,7 @@
   hosts: mapr-core
   roles:
     - ../roles/mapr-core-install
-    - ../roles/mapr-configure-subnets
+    - ../roles/mapr-configure-env-override
 - name: Install Zookeeper
   hosts: mapr-zookeeper
   roles:
@@ -105,15 +105,27 @@
   hosts: all:!mapr-mcs
   roles:
     - ../roles/mapr-mcs-uninstall
-- name: Install NFS
-  hosts: mapr-nfs
+- name: Install NFS v3
+  hosts: mapr-nfs-v3
   roles:
-    - ../roles/mapr-nfs-install
+    - ../roles/mapr-nfs-v3-install
 # uninstall NFS on top
+- name: Configure with genkeys (native-security)
+  hosts: mapr-cldb[0]
+  roles:
+  - {role: ../roles/mapr-configure-nativesecurity-secure-genkeys, when: mapr_security == 'maprsasl' }
+- name: Configure with genkeys (kerberos)
+  hosts: mapr-cldb[0]
+  roles:
+  - {role: ../roles/mapr-configure-kerberos-genkeys, when: mapr_security == 'kerberos' }
 - name: Fetch keys, when no CLDB change happened
   hosts: mapr-cldb[0]
   roles:
-   - {role: ../roles/mapr-configure-security-fetch-keys, when: mapr_security != 'none' and (cldb_changes|int) == 0}
+   - {role: ../roles/mapr-configure-security-fetch-keys, when: mapr_security != 'none' }
+- name: Roll out custom SSL certificates
+  hosts: mapr-core
+  roles:
+  - {role: ../roles/mapr-core-customssl, when: https_custom_certs_enabled }
 - name: Configure and start (unsecure)
   hosts: mapr-core
   roles:
@@ -173,3 +185,9 @@
   roles:
     - ../roles/mapr-posix-client-platinum-install
     - {role: ../roles/mapr-patch-posix-client-platinum-install, when: mapr_patch_url is defined and ansible_os_family != 'Debian'}
+
+# Local cleanup of security relevant files
+# - hosts: 127.0.0.1
+#   connection: local
+#   roles:
+#     - {role: ../roles/mapr-configure-cleanup, when: cleanup_local_keys }

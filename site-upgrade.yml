@@ -61,7 +61,7 @@
       shell: 'rpm -qa --qf "%{NAME}\n" | grep mapr | grep -v mapr-mapreduce1'
       register: rpm_mapr_packages
     - name: Split list
-      set_fact: installed_packages={{ rpm_mapr_packages.stdout.split('\n') }}
+      set_fact: installed_packages="{{ rpm_mapr_packages.stdout.split('\n') }}"
 - name: Upgrade MapR packages
   hosts: mapr-core
   tasks:
@@ -78,11 +78,11 @@
     environment:
       MAPR_TICKETFILE_LOCATION: /opt/mapr/conf/mapruserticket
     when: rolling_upgrade is undefined or not rolling_upgrade
-#- name: Disable maintenance mode
-#  hosts: mapr-core
-#  tasks:
-#  - name: Disable maintenance mode
-#    shell: "maprcli node maintenance -nodes {{ ansible_fqdn }} -timeoutminutes 0"
-#    when: rolling_upgrade is defined and rolling_upgrade
-#    environment:
-#      MAPR_TICKETFILE_LOCATION: /opt/mapr/conf/mapruserticket
+# - name: Disable maintenance mode
+#   hosts: mapr-core
+#   tasks:
+#   - name: Disable maintenance mode
+#     shell: "maprcli node maintenance -nodes {{ ansible_fqdn }} -timeoutminutes 0"
+#     when: rolling_upgrade is defined and rolling_upgrade
+#     environment:
+#       MAPR_TICKETFILE_LOCATION: /opt/mapr/conf/mapruserticket

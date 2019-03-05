@@ -1,4 +1,5 @@
 # MapR Ansible Scripts
+[![Build Status](https://travis-ci.org/mapr-emea/mapr-ansible.svg?branch=master)](https://travis-ci.org/mapr-emea/mapr-ansible)
 
 This is a collection of Ansible scripts which help you to setup a MapR-cluster.
 
@@ -25,7 +26,9 @@ The scripts support:
 
 ## Supported MapR Versions
 
-* MapR 6.0.1 with MEP 5.0.0 (branch master)
+* MapR 6.1.0 with MEP 6.1.0 (branch master)
+* MapR 6.1.0 with MEP 6.0.0 (branch mapr-6.1.0-MEP-6.0.x)
+* MapR 6.0.1 with MEP 5.0.0 (branch mapr-6.0.1-MEP-5.x)
 * MapR 6.0.0 with MEP 4.0.x (branch mapr-6.0.0-MEP-4.x)
 * MapR 5.2.x (branch mapr-5.2-MEP-3.0.x)
 
@@ -35,6 +38,9 @@ The scripts support:
 * CentOS 7 or higher
 * Ubuntu 16.x
 * Suse SLES 12 or higher
+
+Please check MapR's OS compatibility matrix:
+https://mapr.com/docs/61/InteropMatrix/r_os_matrix_6.x.html
 
 ## Supported Security
 
@@ -227,6 +233,14 @@ The module also supports check mode!
     soft_quota_in_mb: 1024
     hard_quota_in_mb: 1024
 ```
+
+## License
+
+Copyright 2018 MapR Technologies, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License")
+
+http://www.apache.org/licenses/LICENSE-2.0
 
 ## Known issues
 
